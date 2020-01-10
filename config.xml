@@ -1,0 +1,19 @@
+<ESRI.Configuration xmlns="http://schemas.esri.com/Desktop/AddIns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><Name>AZGIV</Name><AddInID>{c576906a-bffc-4b14-87d4-8c992ed1b323}</AddInID><Description>Upload layer in azgiv</Description><Version>0.1</Version><Image /><Author>Jinzhou Zhang</Author><Company>GISTIC</Company><Date>01/10/2020</Date><Targets><Target name="Desktop" version="10.1" /></Targets><AddIn language="PYTHON" library="ArcGISAddins_addin.py" namespace="ArcGISAddins_addin"><ArcMap>
+    <Commands>
+        <ComboBox caption="Layer" category="AZGIV" class="Layer" id="layer.combobox" itemSizeString="WWWWWWWWWWW" message="" rows="4" sizeString="WWWWWWWWWWW" tip=""><Help heading="" /></ComboBox>
+        <ComboBox caption="User" category="AZGIV" class="Username" id="username.combobox" itemSizeString="WWWWWWWWWWW" message="" rows="4" sizeString="WWWWWWWWWWW" tip=""><Help heading="" /></ComboBox>
+        <ComboBox caption="Pass" category="AZGIV" class="Password" id="password.combobox" itemSizeString="WWWWWWWWWWW" message="" rows="4" sizeString="WWWWWWWWWWW" tip=""><Help heading="" /></ComboBox>
+        <Button caption="Zoom" category="AZGIV" class="Zoom" id="zoom.button" image="Images\AZGIV-Zoom-mActionZoomToSelected.png" message="" tip=""><Help heading="" /></Button>
+        <Button caption="Sync" category="AZGIV" class="Sync" id="sync.button" image="Images\AZGIV-Synch-arrow_refresh.png" message="" tip=""><Help heading="" /></Button>
+        <Button caption="Upload" category="AZGIV" class="Upload" id="upload.button" image="Images\AZGIV-Upload-mActionFileOpen.png" message="" tip=""><Help heading="" /></Button>
+        <Button caption="QC" category="AZGIV" class="Qc" id="qc.button" image="Images\AZGIV-tick.png" message="" tip=""><Help heading="" /></Button>
+        <Button caption="Download" category="AZGIV" class="Download" id="download.button" image="Images\AZGIV-Download-mActionFileSave.png" message="" tip=""><Help heading="" /></Button>
+        </Commands>
+    <Extensions>
+        </Extensions>
+    <Toolbars>
+        <Toolbar caption="AZGIVUpload" category="AZGIV" id="azgivupload.toolbar" showInitially="true"><Items><ComboBox refID="layer.combobox" /><ComboBox refID="username.combobox" /><ComboBox refID="password.combobox" /><Button refID="zoom.button" /><Button refID="sync.button" /><Button refID="upload.button" /><Button refID="qc.button" /><Button refID="download.button" /></Items></Toolbar>
+        </Toolbars>
+    <Menus>
+        </Menus>
+    </ArcMap></AddIn></ESRI.Configuration>
