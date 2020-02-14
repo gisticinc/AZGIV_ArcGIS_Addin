@@ -12,6 +12,14 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+def checkVariable(var):
+    try:
+        var
+    except NameError:
+        raise
+    if var is None:
+        raise NameError
+
 def checkCustomer(customerId, username, password):
     print "in check customer"
     print customerId
@@ -71,37 +79,11 @@ def cleanUserInfo():
     global customerIds
     global customerNames
     global customerIdSelected
-    try:
-        userId
-        del userId
-    except NameError:
-        print "undefined"
-    try:
-        userSubscriptionId
-        del userSubscriptionId
-    except NameError:
-        print "undefined"
-    try:
-        customerIds
-        del customerIds
-    except NameError:
-        print "undefined"
-    try:
-        customerNames
-        del customerNames
-    except NameError:
-        print "undefined"
-    try:
-        customerIdSelected
-        del customerIdSelected
-    except NameError:
-        print "undefined"
-    global userId
-    global userSubscriptionId
-    global customerIds
-    global customerNames
-    global customerIdSelected
-    
+    userId = None
+    userSubscriptionId = None
+    customerIds = None
+    customerNames = None
+    customerIdSelected = None
 
 def login():
     global username
@@ -112,8 +94,8 @@ def login():
     global customerNames
     global customerIdSelected
     try:
-        username
-        password
+        checkVariable(username)
+        checkVariable(password)
     except NameError:
         raise Exception("Please fill username and password.")
 
@@ -165,13 +147,9 @@ class Customer(object):
                 customerIdSelected = customerIds[i]
     def onEditChange(self, text):
         global customerName
-        print text
-        try:
-            customerIdSelected
-            del customerIdSelected
-        except:
-            print "undefined"
         global customerIdSelected
+        print text
+        customerIdSelected = None
         customerName = text
         for i in range(len(customerIds)):
             if customerNames[i] == text:
@@ -205,19 +183,19 @@ class Upload(object):
             global userId
             global userSubscriptionId
             try:
-                username
-                password
+                checkVariable(username)
+                checkVariable(password)
             except NameError:
                 raise Exception("Please fill username and password.")
             try:
-                layer
+                checkVariable(layer)
             except NameError:
                 raise Exception("Please pick a layer.")
             try:
-                customerIdSelected
+                checkVariable(customerIdSelected)
             except NameError:
                 try:
-                    customerName
+                    checkVariable(customerName)
                 except NameError:
                     raise Exception("Data owner agency not defined.  Please pick a client agency from the dropdown list and upload again")
                 if customerName == "":
@@ -286,19 +264,19 @@ class Download(object):
             global userId
             global userSubscriptionId
             try:
-                username
-                password
+                checkVariable(username)
+                checkVariable(password)
             except NameError:
                 raise Exception("Please fill username and password.")
             try:
-                layer
+                checkVariable(layer)
             except NameError:
                 raise Exception("Please pick a layer.")
             try:
-                customerIdSelected
+                checkVariable(customerIdSelected)
             except NameError:
                 try:
-                    customerName
+                    checkVariable(customerName)
                 except NameError:
                     raise Exception("Data owner agency not defined.  Please pick a client agency from the dropdown list and upload again")
                 if customerName == "":
@@ -366,19 +344,19 @@ class Qc(object):
             global userSubscriptionId
             global customerName
             try:
-                username
-                password
+                checkVariable(username)
+                checkVariable(password)
             except NameError:
                 raise Exception("Please fill username and password.")
             try:
-                layer
+                checkVariable(layer)
             except NameError:
                 raise Exception("Please pick a layer.")
             try:
-                customerIdSelected
+                checkVariable(customerIdSelected)
             except NameError:
                 try:
-                    customerName
+                    checkVariable(customerName)
                 except NameError:
                     raise Exception("Data owner agency not defined.  Please pick a client agency from the dropdown list and upload again")
                 if customerName == "":
@@ -494,12 +472,12 @@ class Zoom(object):
             global username
             global password
             try:
-                username
-                password
+                checkVariable(username)
+                checkVariable(password)
             except NameError:
                 raise Exception("Please fill username and password.")
             try:
-                layer
+                checkVariable(layer)
             except NameError:
                 raise Exception("Please pick a layer.")
 
