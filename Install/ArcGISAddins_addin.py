@@ -6,11 +6,64 @@ import string
 import random
 from zipfile import ZipFile
 import os
+import distutils.dir_util
 """import urllib3"""
 """urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)"""
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+import os
+
+if os.name == 'nt':
+    import ctypes
+    from ctypes import windll, wintypes
+    from uuid import UUID
+
+    # ctypes GUID copied from MSDN sample code
+    class GUID(ctypes.Structure):
+        _fields_ = [
+            ("Data1", wintypes.DWORD),
+            ("Data2", wintypes.WORD),
+            ("Data3", wintypes.WORD),
+            ("Data4", wintypes.BYTE * 8)
+        ] 
+
+        def __init__(self, uuidstr):
+            uuid = UUID(uuidstr)
+            ctypes.Structure.__init__(self)
+            self.Data1, self.Data2, self.Data3, \
+                self.Data4[0], self.Data4[1], rest = uuid.fields
+            for i in range(2, 8):
+                self.Data4[i] = rest>>(8-i-1)*8 & 0xff
+
+    SHGetKnownFolderPath = windll.shell32.SHGetKnownFolderPath
+    SHGetKnownFolderPath.argtypes = [
+        ctypes.POINTER(GUID), wintypes.DWORD,
+        wintypes.HANDLE, ctypes.POINTER(ctypes.c_wchar_p)
+    ]
+
+    def _get_known_folder_path(uuidstr):
+        pathptr = ctypes.c_wchar_p()
+        guid = GUID(uuidstr)
+        if SHGetKnownFolderPath(ctypes.byref(guid), 0, 0, ctypes.byref(pathptr)):
+            raise ctypes.WinError()
+        return pathptr.value
+
+    FOLDERID_Download = '{374DE290-123F-4565-9164-39C4925E467B}'
+
+    def get_download_folder():
+        azgivPath = _get_known_folder_path(FOLDERID_Download) + "\AZGIVDownload"
+        print "making dir"
+        distutils.dir_util.mkpath(azgivPath)
+        return azgivPath
+else:
+    def get_download_folder():
+        home = os.path.expanduser("~")
+        azgivPath = os.path.join(home, "Downloads\AZGIVDownload")
+        print "making dir"
+        distutils.dir_util.mkpath(azgivPath)
+        return azgivPath
 
 def checkVariable(var):
     try:
@@ -207,11 +260,11 @@ class Upload(object):
             content = checkLayer(customerIdSelected, layer)
             processId = self.randomString()
             # Write file to local machine
-            arcpy.CreateFileGDB_management("C:\Users\Gistic\Downloads\AZGIVDownload", processId + ".gdb")
-            outputPath = "C:\Users\Gistic\Downloads\AZGIVDownload\\" + processId + ".gdb"
+            arcpy.CreateFileGDB_management(get_download_folder(), processId + ".gdb")
+            outputPath = get_download_folder() + "\\" + processId + ".gdb"
             print outputPath
             arcpy.FeatureClassToGeodatabase_conversion([content["dataSource"]], outputPath)
-            zipPath = "C:\Users\Gistic\Downloads\AZGIVDownload\\" + processId + ".zip"
+            zipPath = get_download_folder() + "\\" + processId + ".zip"
             with ZipFile(zipPath, "w") as zipObj:
                 # Iterate over all the files in directory
                 for folderName, subfolders, filenames in os.walk(outputPath):
@@ -309,9 +362,9 @@ class Download(object):
                     if r4.status_code == 200:
                         fileNameList = content3.split("/")
                         fileName = fileNameList[len(fileNameList)-1]
-                        with open("C:\Users\Gistic\Downloads\AZGIVDownload\\" + fileName, "w+") as f:
+                        with open(get_download_folder() + "\\" + fileName, "w+") as f:
                             f.write(r4.content)
-                        arcpy.AddJoin_management(layer, "NGUID", "C:\Users\Gistic\Downloads\AZGIVDownload\\" + fileName,"nguid")
+                        arcpy.AddJoin_management(layer, "NGUID", get_download_folder() + "\\" + fileName,"nguid")
                         pythonaddins.MessageBox("Please check your file at azgivdownload", "INFO", 0)
                     else:
                         pythonaddins.MessageBox("Please get your file at " + content3, "INFO", 0)
