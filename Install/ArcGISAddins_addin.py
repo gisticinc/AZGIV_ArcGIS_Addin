@@ -364,8 +364,17 @@ class Download(object):
                         fileName = fileNameList[len(fileNameList)-1]
                         with open(get_download_folder() + "\\" + fileName, "w+") as f:
                             f.write(r4.content)
-                        arcpy.AddJoin_management(layer, "NGUID", get_download_folder() + "\\" + fileName,"nguid")
-                        pythonaddins.MessageBox("Please check your file at azgivdownload", "INFO", 0)
+                        try:
+                            url5 = "https://72.215.195.71:4203/azgiv/nguidStatusArcgis"
+                            params5 = {"layerId": layerId}
+                            r5 = requests.get(url = url5, params = params5, verify = False)
+                            if r5.status_code == 200:
+                                arcpy.AddJoin_management(layer, "NGUID", get_download_folder() + "\\" + fileName,"nguid")
+                                pythonaddins.MessageBox("Please check your file at azgivdownload. The file is also joined to your layer.", "INFO", 0)
+                            else:
+                                raise Exception()
+                        except:
+                            pythonaddins.MessageBox("Please check your file at azgivdownload.", "INFO", 0)
                     else:
                         pythonaddins.MessageBox("Please get your file at " + content3, "INFO", 0)
                 elif r3.status_code == 500:
