@@ -210,7 +210,7 @@ class Customer(object):
     def onFocus(self, focused):
         global customerNames
         global customerIds
-        self.items = customerNames
+        self.items = sorted(customerNames)
     def onEnter(self):
         pass
     def refresh(self):
