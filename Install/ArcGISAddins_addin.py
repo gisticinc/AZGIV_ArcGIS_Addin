@@ -76,7 +76,7 @@ def checkVariable(var):
 def checkCustomer(customerId, username, password):
     print "in check customer"
     print customerId
-    url = "https://72.215.195.71:4203/azgiv/userInfo"
+    url = "https://api.linearbench.com/azgiv/userInfo"
     params = {"username": username, "password": password}
     print username
     print password
@@ -111,7 +111,7 @@ def checkLayer(customerId, layer):
             schema = {}
             for field in fields:
                 schema[field.name] = field.type
-            url = "https://72.215.195.71:4203/azgiv/layerStatus"
+            url = "https://api.linearbench.com/azgiv/layerStatus"
             params = {"customerId": customerId, "schema": json.dumps(schema), "layer": layerName}
             r = requests.get(url = url, params = params, verify = False)
             content = r.content
@@ -152,7 +152,7 @@ def login():
     except NameError:
         raise Exception("Please fill username and password.")
 
-    url = "https://72.215.195.71:4203/azgiv/userInfo"
+    url = "https://api.linearbench.com/azgiv/userInfo"
     params = {"username": username, "password": password}
     r = requests.get(url = url, params = params, verify = False)
     content = r.content
@@ -278,7 +278,7 @@ class Upload(object):
             contentDict = content["spec"]
             contentDict["files"][0]["layers"][0]["name"] = content["sourceLayerName"]
             spec = json.dumps(contentDict)
-            url2 = "https://72.215.195.71:4203/azgiv/fileArcgis"
+            url2 = "https://api.linearbench.com/azgiv/fileArcgis"
             payload = {"userId": userId, "userSubscriptionId": userSubscriptionId, "spec": spec, "email": username}
             zipFileName = processId + ".zip"
             zipFile = open(zipPath, 'rb')
@@ -344,13 +344,13 @@ class Download(object):
             customerId = content["customerId"]
 
                         
-            url2 = "https://72.215.195.71:4203/azgiv/qcFeatureReportQuery"
+            url2 = "https://api.linearbench.com/azgiv/qcFeatureReportQuery"
             params2 = {"idOnly": "true", "glyId": layerId}
             r2 = requests.get(url = url2, params = params2, verify = False)
             if r2.status_code == 200:
                 content2 = json.loads(r2.content)
                 query = content2["payload"]["content"]["sql"]
-                url3 = "https://72.215.195.71:4203/azgiv/azgivDownloadArcgis"
+                url3 = "https://api.linearbench.com/azgiv/azgivDownloadArcgis"
                 params3 = {"query": query}
                 r3 = requests.get(url = url3, params = params3, verify = False)
                 if r3.status_code == 200:
@@ -365,7 +365,7 @@ class Download(object):
                         with open(get_download_folder() + "\\" + fileName, "w+") as f:
                             f.write(r4.content)
                         try:
-                            url5 = "https://72.215.195.71:4203/azgiv/nguidStatusArcgis"
+                            url5 = "https://api.linearbench.com/azgiv/nguidStatusArcgis"
                             params5 = {"layerId": layerId}
                             r5 = requests.get(url = url5, params = params5, verify = False)
                             if r5.status_code == 200:
@@ -431,7 +431,7 @@ class Qc(object):
             content = checkLayer(customerIdSelected, layer)
             layerId = content["layerId"]
             customerId = content["customerId"]                        
-            url2 = "https://72.215.195.71:4203/azgiv/qcLayersArcgis"
+            url2 = "https://api.linearbench.com/azgiv/qcLayersArcgis"
             payload = {"userId": userId, "userSubscriptionId": userSubscriptionId, "layerId": layerId, "customerId": customerId, "email": username}
             r2 = requests.post(url = url2, data = payload, verify = False)
             if r2.status_code == 200:
@@ -545,7 +545,7 @@ class Zoom(object):
 
             mxd = arcpy.mapping.MapDocument('current')
             df = arcpy.mapping.ListDataFrames(mxd)[0]
-            url = "https://72.215.195.71:4203/azgiv/extent"
+            url = "https://api.linearbench.com/azgiv/extent"
             params = {'email': username, 'projection': df.spatialReference.factoryCode}
             r = requests.get(url = url, params = params, verify = False)
             data = r.json()
